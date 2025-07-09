@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Boda de Mirian & Bayron</title>
+  <title>Boda de Bayron & Mirian</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
   <style>
@@ -87,7 +87,7 @@
   <!-- Menú de navegación -->
   <nav class="bg-black fixed top-0 left-0 right-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <span class="titulo-principal text-4xl font-bold text-pink-600">Mirian & Bayron</span>
+      <span class="titulo-principal text-4xl font-bold text-pink-600"> Bayron & Mirian</span>
 
       <button id="menu-btn" class="text-white md:hidden text-3xl focus:outline-none z-50 relative">&#9776;</button>
 
@@ -150,7 +150,7 @@
     0.5px -0.5px 0 #fff,
     -0.5px 0.5px 0 #fff,
     0.5px 0.5px 0 #fff;
-">Mirian & Bayron</p>
+">B & M</p>
 
   <p class="text-xl md:text-3xl mt-4  text-white drop-shadow-md"  style="
   text-shadow:
@@ -182,18 +182,28 @@
       <div class="text-center mt-4 text-lg font-semibold">Un viaje lleno de amor - Gracias por ser parte de nuestra historia</div>
     </section>
 
-    <section id="registro" class="bg-white shadow-2xl p-10 rounded-2xl">
-      <h2 class="text-4xl font-bold text-center text-pink-600 mb-8">Confirma tu asistencia</h2>
- <h3 class="font-bold text-center text-black-600 mb-8">La personas invitadas solamente pueden ser conocidos de los novios, por motivos de espácio y alimentación</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <input id="nombre" type="text" placeholder="Tu nombre completo" class="border p-4 rounded-lg" />
-        <input id="correo" type="email" placeholder="Tu correo electrónico opcional" class="border p-4 rounded-lg" />
-        <input id="personas" type="number" placeholder="Número de personas" class="border p-4 rounded-lg" />
-      </div>
-      <div class="mt-6 text-center">
-        <button onclick="confirmarAsistencia()" class="bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-full shadow-lg transition">Confirmar vía WhatsApp</button>
-      </div>
-    </section>
+     <!-- Confirmación de asistencia -->
+<section id="registro" class="bg-white shadow-2xl p-10 rounded-2xl">
+  <h2 class="text-4xl font-bold text-center text-pink-600 mb-6">Confirma tu asistencia</h2>
+  <h3 class="font-bold text-center text-black-600 mb-6">Solo personas invitadas pueden confirmar asistencia con el Código de Invitación</h3>
+
+  <!-- Código de invitación -->
+  <div class="mb-6 text-center">
+    <input id="codigo" type="text" placeholder="Código de invitación" class="border p-4 rounded-lg w-full md:w-1/3" />
+    <button onclick="verificarCodigo()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full ml-4">Verificar código</button>
+  </div>
+
+  <!-- Formulario oculto -->
+  <div id="formularioDatos" class="hidden">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <input id="nombre" type="text" placeholder="Tu nombre completo" class="border p-4 rounded-lg" />
+      <input id="personas" type="number" placeholder="Número de personas" class="border p-4 rounded-lg" />
+    </div>
+    <div class="text-center">
+      <button onclick="confirmarAsistencia()" class="bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-full shadow-lg transition">Confirmar vía WhatsApp</button>
+    </div>
+  </div>
+</section>
 
        <!-- Ubicación -->
    <section id="ubicacion" class="bg-white shadow-2xl p-10 rounded-2xl">
@@ -235,12 +245,12 @@
   </main>
 
   <div class="bg-pink-100 text-center py-6 text-4xl text-gray-700">
-   <p>Con amor, Mirian & Bayron</p>
+   <p>Con amor, Bayron & Mirian</p>
     <p>Gracias por acompañarnos en este momento tan especial ❤️</p>
   </div>
 
   <footer class="bg-black text-center py-4 text-sm text-white">
-    <p class="mb-2">Diseñado por Bayron Garcia BG MultiTech· © 2025</p>
+    <p class="mb-2">Diseñado por Ing. Bayron Garcia | BG MultiTech· © 2025</p>
   </footer>
 
   <script>
@@ -289,20 +299,53 @@
     window.addEventListener('load', checkSections);
 
     // Confirmar asistencia WhatsApp
-    function confirmarAsistencia() {
-      const nombre = document.getElementById("nombre").value.trim();
-      const correo = document.getElementById("correo").value.trim();
-      const personas = document.getElementById("personas").value.trim();
+  let codigoValido = false;
 
-      if (!nombre || !personas) {
-        alert("Por favor completa todos los campos.");
-        return;
-      }
+async function verificarCodigo() {
+  const codigoIngresado = document.getElementById("codigo").value.trim().toLowerCase();
 
-      const mensaje = `¡Hola! Confirmo mi asistencia a la boda.%0ANombre: ${nombre}%0ACorreo: ${correo}%0ANúmero de personas: ${personas}`;
-      const url = `https://wa.me/34641862314?text=${mensaje}`;
-      window.open(url, '_blank');
+  if (!codigoIngresado) {
+    alert("Por favor ingresa tu código de invitación.");
+    return;
+  }
+
+  try {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbymDCLS2MZppSCKzJwmHWCA7GYIpkn7NKoyCtGhjCyCVcIDMHG0JXHgvglnMk29fLV4mg/exec");
+    const data = await response.json();
+
+    const codigosInvitacion = data.map(item => item.toLowerCase());
+
+    if (codigosInvitacion.includes(codigoIngresado)) {
+      codigoValido = true;
+      document.getElementById("formularioDatos").classList.remove("hidden");
+      alert("¡Código válido! Ahora completa tus datos para confirmar.");
+    } else {
+      alert("El código ingresado no es válido. Verifica con los novios si tienes dudas.");
     }
+  } catch (error) {
+    alert("Error al verificar el código. Intenta más tarde.");
+    console.error(error);
+  }
+}
+
+function confirmarAsistencia() {
+  if (!codigoValido) {
+    alert("Primero debes verificar tu código de invitación.");
+    return;
+  }
+
+  const nombre = document.getElementById("nombre").value.trim();
+  const personas = document.getElementById("personas").value.trim();
+
+  if (!nombre || !personas) {
+    alert("Por favor completa todos los campos.");
+    return;
+  }
+
+  const mensaje = `¡Hola! Confirmo mi asistencia a la boda.%0ANombre: ${nombre}%0ANúmero de personas: ${personas}`;
+  const whatsappURL = `https://wa.me/34641862314?text=${mensaje}`;
+  window.open(whatsappURL, '_blank');
+}
 
     // Menú móvil
     const menuBtn = document.getElementById('menu-btn');
